@@ -39,6 +39,7 @@ export default class {
               return {
                 ...doc,
                 date: formatDate(doc.date),
+                unformattedDate: doc.date,
                 status: formatStatus(doc.status)
               }
             } catch(e) {
@@ -53,6 +54,8 @@ export default class {
             }
           })
           console.log('length', bills.length)
+          bills.sort((a, b) => a.unformattedDate > b.unformattedDate ? 1 : -1)
+          console.log(bills)
         return bills
       })
     }

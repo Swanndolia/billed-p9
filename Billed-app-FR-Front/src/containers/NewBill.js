@@ -18,6 +18,12 @@ export default class NewBill {
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const fileExtension = file.name.split('.').pop()
+    if(fileExtension != "pdf" && fileExtension != "jpg" && fileExtension != "jpeg" && fileExtension != "png"){
+      console.log(fileExtension)
+      alert('Veuillez sélectionner un fichier pdf, jpg, ou png')
+      return;
+    }
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
