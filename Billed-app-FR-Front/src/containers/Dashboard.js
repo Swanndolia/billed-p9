@@ -69,6 +69,7 @@ export const getStatus = (index) => {
 
 export default class {
   constructor({ document, onNavigate, store, bills, localStorage }) {
+    this.billOpen = false
     this.open = []
     this.document = document
     this.onNavigate = onNavigate
@@ -87,15 +88,26 @@ export default class {
   }
 
   handleEditTicket(e, bill, bills) {
-    if (this.id === undefined || this.id !== bill.id) this.id = bill.id
+    if (this.lastClicked == bill.id) {
+      this.lastClicked = undefined
+      $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
-    bills.forEach(b => {
-      $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
-    })
-    $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
-    $('.dashboard-right-container div').html(DashboardFormUI(bill))
-    $('.vertical-navbar').css({ height: '150vh' })
-    this.counter++
+      $('.dashboard-right-container div').html(`
+        <div id="big-billed-icon" data-testid="big-billed-icon"> ${BigBilledIcon} </div>
+      `)
+      $('.vertical-navbar').css({ height: '120vh' })
+    }
+    else if (this.lastClicked === undefined || this.lastClicked != bill.id) {
+      this.lastClicked = bill.id
+      bills.forEach(b => {
+        e.stopImmediatePropagation()
+        $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
+      })
+      $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
+      $('.dashboard-right-container div').html(DashboardFormUI(bill))
+      $('.vertical-navbar').css({ height: '150vh' })
+
+    }
 
     $('#icon-eye-d').click(this.handleClickIconEye)
     $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
@@ -138,6 +150,7 @@ export default class {
     }
 
     bills.forEach(bill => {
+      e.stopImmediatePropagation()
       $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
 
